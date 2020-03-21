@@ -12,11 +12,14 @@ const apply = node => {
   return fn(...args);
 };
 
-const evaluate = node => {
-  if (node.type === 'CallExpression') {
-    return apply(node);
-  }
+const getIdentifier = node => {
+  if (environment[node.name]) return environment[node.name];
+  throw new ReferenceError(`${node.name} is not defined`);
+};
 
+const evaluate = node => {
+  if (node.type === 'CallExpression') return apply(node);
+  if (node.type === 'Identifier') return getIdentifier(node);
   if (node.value) return node.value;
 };
 
